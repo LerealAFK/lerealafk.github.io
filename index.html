@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Navigation Rapide">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <title>Navigation Rapide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #555;
+        }
+        .quick-links {
+            margin: 20px 0;
+        }
+        .quick-links a {
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 10px 20px;
+            color: white;
+            background-color: #0078d4;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .quick-links a:hover {
+            background-color: #005a9e;
+        }
+        .custom-url {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>Navigation Rapide</h1>
+    <p>Sélectionnez un lien rapide ou entrez une URL personnalisée.</p>
+
+    <div class="quick-links">
+        <a href="https://www.google.com" target="_blank">Google</a>
+        <a href="https://www.duckduckgo.com" target="_blank">DuckDuckGo</a>
+        <a href="https://www.youtube.com" target="_blank">YouTube</a>
+        <a href="https://www.github.com" target="_blank">GitHub</a>
+        <a href="https://chatgpt.com" target="_blank">ChatGPT</a>
+    </div>
+
+    <div class="custom-url">
+        <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
+        <button onclick="navigateToUrl()">Aller</button>
+    </div>
+
+    <script>
+        function navigateToUrl() {
+            const urlInput = document.getElementById('customUrl').value;
+            let url = urlInput.trim();
+
+            // Ajouter "https://" si nécessaire
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            // Vérifier si l'URL est valide
+            try {
+                new URL(url);
+                window.open(url, '_blank');
+            } catch (e) {
+                alert('URL invalide. Veuillez entrer une URL correcte.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "Navigateur web",
+  "short_name": "NavRapide",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f4f4f9",
+  "theme_color": "#0078d4",
+  "icons": [
+    {
+      "src": "IMG_2952.jpeg",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "IMG_2952.jpeg",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
