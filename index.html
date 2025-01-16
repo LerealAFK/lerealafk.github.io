@@ -11,17 +11,16 @@
     <title>Navigation Rapide</title>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
-    background-size: cover;        /* Ajoutez cette ligne */
-    background-repeat: no-repeat;
-    background-position: center;   /* Ajoutez cette ligne */
-    background-color: #f4f4f9;
-    color: #333;
-    transition: background 0.5s ease-in-out;
-}
-
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #f4f4f9;
+            color: #333;
+            transition: background 0.5s ease-in-out;
+        }
         h1 {
             color: #555;
         }
@@ -90,57 +89,36 @@
         #resetBg:hover {
             background-color: #d32f2f;
         }
-        .background-options {
-            margin-top: 20px;
-        }
-        .background-options button {
-            background-color: #0078d4;
-            margin: 5px;
-        }
-        .background-options button:hover {
-            background-color: #005a9e;
-        }
-        /* Style pour le bouton Paramètres et le menu déroulant */
-        #settings-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background-color: #0078d4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 15px;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 1000;
-        }
-        #settings-btn:hover {
-            background-color: #005a9e;
-        }
+        /* Menu déroulant */
         .settings-menu {
             display: none;
-            position: fixed;
-            bottom: 70px;
-            left: 20px;
+            position: absolute;
+            bottom: 60px;
+            left: 10px;
             background-color: #fff;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 5px;
             padding: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-            width: 200px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
         }
         .settings-menu button {
             width: 100%;
-            padding: 10px;
             margin: 5px 0;
+        }
+        #settingsButton {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
             background-color: #0078d4;
             color: white;
             border: none;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 50%;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        .settings-menu button:hover {
+        #settingsButton:hover {
             background-color: #005a9e;
         }
     </style>
@@ -163,27 +141,14 @@
         <button onclick="navigateToUrl()">Aller</button>
     </div>
 
-    <!-- Sélectionner l'arrière-plan -->
-    <div class="background-options">
-        <!-- Arrière-plan 1 -->
-        <button onclick="setDefaultBackground('https://www.w3schools.com/w3images/fjords.jpg')">Arrière-plan 1</button>
-        <!-- Arrière-plan 2 -->
-        <button onclick="setDefaultBackground('https://www.w3schools.com/w3images/mountains.jpg')">Arrière-plan 2</button>
-        <!-- Arrière-plan 3 -->
-        <button onclick="setDefaultBackground('https://www.w3schools.com/w3images/forest.jpg')">Arrière-plan 3</button>
-    </div>
-
-    <input type="file" id="bgUploader" accept="image/*" onchange="changeBackground(event)">
-    <button id="resetBg" onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
-
-    <!-- Paramètres (menu déroulant) -->
-    <button id="settings-btn" onclick="toggleSettingsMenu()">Paramètres</button>
-
-    <div class="settings-menu" id="settings-menu">
-        <button onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
+    <!-- Menu déroulant -->
+    <div class="settings-menu" id="settingsMenu">
+        <button id="bgUploader" onclick="changeBackground()">Changer l'arrière-plan</button>
+        <button id="resetBg" onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
         <button onclick="resetQuickLinks()">Réinitialiser les liens rapides</button>
-        <button onclick="changeBackground()">Changer l'arrière-plan</button>
     </div>
+
+    <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
 
     <script>
         // Charger l'image d'arrière-plan depuis le localStorage
@@ -211,17 +176,12 @@
             }
         }
 
-        // Changer l'arrière-plan et sauvegarder dans le localStorage
-        function changeBackground(event) {
-            const file = event.target?.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageUrl = e.target.result;
-                    document.body.style.backgroundImage = `url(${imageUrl})`;
-                    localStorage.setItem('backgroundImage', imageUrl);
-                };
-                reader.readAsDataURL(file);
+        // Changer l'arrière-plan
+        function changeBackground() {
+            const imageUrl = prompt("Entrez l'URL de l'image de fond");
+            if (imageUrl) {
+                document.body.style.backgroundImage = `url(${imageUrl})`;
+                localStorage.setItem('backgroundImage', imageUrl);
             }
         }
 
@@ -231,21 +191,28 @@
             localStorage.removeItem('backgroundImage');
         }
 
-        // Sélectionner un arrière-plan de base
-        function setDefaultBackground(imageUrl) {
-            document.body.style.backgroundImage = `url(${imageUrl})`;
-            localStorage.setItem('backgroundImage', imageUrl);
-        }
-
-        // Toggle menu déroulant
-        function toggleSettingsMenu() {
-            const settingsMenu = document.getElementById('settings-menu');
-            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
-        }
-
-        // Réinitialiser les liens rapides (Exemple)
+        // Réinitialiser les liens rapides (fonctionnalité exemple)
         function resetQuickLinks() {
-            alert("Réinitialisation des liens rapides !");
+            const defaultLinks = [
+                { name: 'Google', url: 'https://www.google.com' },
+                { name: 'Qwant', url: 'https://www.qwant.com' },
+                { name: 'DuckDuckGo', url: 'https://www.duckduckgo.com' },
+                { name: 'YouTube', url: 'https://www.youtube.com' },
+                { name: 'GitHub', url: 'https://www.github.com' },
+                { name: 'ChatGPT', url: 'https://chatgpt.com' }
+            ];
+            localStorage.setItem('quickLinks', JSON.stringify(defaultLinks));
+            loadQuickLinks();
+        }
+
+        // Toggle settings menu visibility
+        function toggleSettingsMenu() {
+            const settingsMenu = document.getElementById('settingsMenu');
+            if (settingsMenu.style.display === 'none' || settingsMenu.style.display === '') {
+                settingsMenu.style.display = 'block';
+            } else {
+                settingsMenu.style.display = 'none';
+            }
         }
     </script>
 </body>
