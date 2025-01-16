@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Navigation Rapide">
-    <link rel="apple-touch-icon" href="IMG_2952.jpeg">
     <title>Navigation Rapide</title>
     <style>
         body {
@@ -26,18 +24,38 @@
         }
         .quick-links {
             margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
-        .quick-links a {
+        .quick-link {
+            margin: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .quick-link a {
             text-decoration: none;
-            margin: 0 10px;
             padding: 10px 20px;
             color: white;
             background-color: #0078d4;
             border-radius: 5px;
+            margin-right: 5px;
             transition: background-color 0.3s ease;
         }
-        .quick-links a:hover {
+        .quick-link a:hover {
             background-color: #005a9e;
+        }
+        .quick-link button {
+            background-color: #f44336;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .quick-link button:hover {
+            background-color: #d32f2f;
         }
         .custom-url {
             margin: 20px 0;
@@ -48,6 +66,7 @@
             max-width: 400px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            margin-bottom: 10px;
         }
         button {
             padding: 10px 20px;
@@ -62,32 +81,11 @@
         button:hover {
             background-color: #218838;
         }
-        #bgUploader {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #ff9800;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        #addQuickLink {
+            background-color: #0078d4;
         }
-        #bgUploader:hover {
-            background-color: #e68900;
-        }
-        #resetBg {
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        #resetBg:hover {
-            background-color: #d32f2f;
+        #addQuickLink:hover {
+            background-color: #005a9e;
         }
     </style>
 </head>
@@ -95,67 +93,83 @@
     <h1>Navigation Rapide</h1>
     <p>Sélectionnez un lien rapide ou entrez une URL personnalisée.</p>
 
-    <div class="quick-links">
-        <a href="https://www.google.com" target="_blank">Google</a>
-        <a href="https://www.qwant.com" target="_blank">Qwant</a>
-        <a href="https://www.duckduckgo.com" target="_blank">DuckDuckGo</a>
-        <a href="https://www.youtube.com" target="_blank">YouTube</a>
-        <a href="https://www.github.com" target="_blank">GitHub</a>
-        <a href="https://chatgpt.com" target="_blank">ChatGPT</a>
-    </div>
+    <!-- Zone des Quick Links -->
+    <div class="quick-links" id="quickLinks"></div>
 
+    <!-- Ajouter un lien personnalisé -->
     <div class="custom-url">
-        <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
-        <button onclick="navigateToUrl()">Aller</button>
+        <input type="text" id="linkName" placeholder="Nom du lien (ex. Google)">
+        <input type="text" id="linkUrl" placeholder="URL du lien (ex. https://google.com)">
+        <button id="addQuickLink">+</button>
     </div>
-
-    <input type="file" id="bgUploader" accept="image/*" onchange="changeBackground(event)">
-    <button id="resetBg" onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
 
     <script>
-        // Charger l'image d'arrière-plan depuis le localStorage
+        // Charger les Quick Links depuis le localStorage
         document.addEventListener('DOMContentLoaded', () => {
-            const savedBackground = localStorage.getItem('backgroundImage');
-            if (savedBackground) {
-                document.body.style.backgroundImage = `url(${savedBackground})`;
-            }
+            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [];
+            renderQuickLinks(savedLinks);
         });
 
-        // Naviguer vers une URL saisie
-        function navigateToUrl() {
-            const urlInput = document.getElementById('customUrl').value;
-            let url = urlInput.trim();
+        // Ajouter un Quick Link
+        document.getElementById('addQuickLink').addEventListener('click', () => {
+            const linkName = document.getElementById('linkName').value.trim();
+            let linkUrl = document.getElementById('linkUrl').value.trim();
 
-            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
+            if (!linkName || !linkUrl) {
+                alert("Veuillez saisir un nom et une URL valides.");
+                return;
             }
 
-            try {
-                new URL(url);
-                window.open(url, '_blank');
-            } catch (e) {
-                alert('URL invalide. Veuillez entrer une URL correcte.');
+            // Ajouter "https://" si nécessaire
+            if (!linkUrl.startsWith('http://') && !linkUrl.startsWith('https://')) {
+                linkUrl = 'https://' + linkUrl;
             }
+
+            const newLink = { name: linkName, url: linkUrl };
+
+            // Récupérer les liens existants, ajouter le nouveau et sauvegarder
+            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [];
+            savedLinks.push(newLink);
+            localStorage.setItem('quickLinks', JSON.stringify(savedLinks));
+
+            // Mettre à jour l'affichage
+            renderQuickLinks(savedLinks);
+
+            // Réinitialiser les champs d'entrée
+            document.getElementById('linkName').value = '';
+            document.getElementById('linkUrl').value = '';
+        });
+
+        // Afficher les Quick Links
+        function renderQuickLinks(links) {
+            const quickLinksContainer = document.getElementById('quickLinks');
+            quickLinksContainer.innerHTML = '';
+
+            links.forEach((link, index) => {
+                const linkElement = document.createElement('div');
+                linkElement.className = 'quick-link';
+
+                const anchor = document.createElement('a');
+                anchor.href = link.url;
+                anchor.textContent = link.name;
+                anchor.target = '_blank';
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '🗑️';
+                deleteButton.onclick = () => deleteQuickLink(index);
+
+                linkElement.appendChild(anchor);
+                linkElement.appendChild(deleteButton);
+                quickLinksContainer.appendChild(linkElement);
+            });
         }
 
-        // Changer l'arrière-plan et sauvegarder dans le localStorage
-        function changeBackground(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageUrl = e.target.result;
-                    document.body.style.backgroundImage = `url(${imageUrl})`;
-                    localStorage.setItem('backgroundImage', imageUrl);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // Réinitialiser l'arrière-plan
-        function resetBackground() {
-            document.body.style.backgroundImage = '';
-            localStorage.removeItem('backgroundImage');
+        // Supprimer un Quick Link
+        function deleteQuickLink(index) {
+            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [];
+            savedLinks.splice(index, 1);
+            localStorage.setItem('quickLinks', JSON.stringify(savedLinks));
+            renderQuickLinks(savedLinks);
         }
     </script>
 </body>
