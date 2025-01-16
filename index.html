@@ -200,6 +200,25 @@
             renderHistory();
         });
 
+        // Naviguer vers une URL saisie
+        function navigateToUrl() {
+            const urlInput = document.getElementById('customUrl').value;
+            let url = urlInput.trim();
+
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            try {
+                new URL(url); // Vérifie si l'URL est valide
+                window.open(url, '_blank');
+                addToHistory(url); // Ajoute l'URL à l'historique
+            } catch (e) {
+                alert('URL invalide. Veuillez entrer une URL correcte.');
+            }
+}
+
+
         // Gérer l'historique
         function addToHistory(item) {
             const history = JSON.parse(localStorage.getItem('history')) || [];
