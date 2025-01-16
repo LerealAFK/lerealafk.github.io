@@ -14,7 +14,10 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
-            background: white;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: #f4f4f9;
             color: #333;
         }
         h1 {
@@ -47,7 +50,7 @@
         }
         button {
             padding: 10px 20px;
-            margin-left: 10px;
+            margin: 10px;
             background-color: #28a745;
             color: white;
             border: none;
@@ -57,6 +60,10 @@
         }
         button:hover {
             background-color: #218838;
+        }
+        #bgUploader {
+            display: block;
+            margin: 20px auto;
         }
     </style>
 </head>
@@ -78,6 +85,9 @@
         <button onclick="navigateToUrl()">Aller</button>
     </div>
 
+    <!-- Input pour importer une image -->
+    <input type="file" id="bgUploader" accept="image/*" onchange="changeBackground(event)">
+
     <script>
         function navigateToUrl() {
             const urlInput = document.getElementById('customUrl').value;
@@ -94,6 +104,17 @@
                 window.open(url, '_blank');
             } catch (e) {
                 alert('URL invalide. Veuillez entrer une URL correcte.');
+            }
+        }
+
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.backgroundImage = `url(${e.target.result})`;
+                };
+                reader.readAsDataURL(file);
             }
         }
     </script>
