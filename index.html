@@ -19,6 +19,7 @@
             background-position: center;
             background-color: #f4f4f9;
             color: #333;
+            transition: background 0.5s ease-in-out;
         }
         h1 {
             color: #555;
@@ -64,6 +65,29 @@
         #bgUploader {
             display: block;
             margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #bgUploader:hover {
+            background-color: #e68900;
+        }
+        #resetBg {
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #resetBg:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
@@ -85,20 +109,27 @@
         <button onclick="navigateToUrl()">Aller</button>
     </div>
 
-    <!-- Input pour importer une image -->
     <input type="file" id="bgUploader" accept="image/*" onchange="changeBackground(event)">
+    <button id="resetBg" onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
 
     <script>
+        // Charger l'image d'arrière-plan depuis le localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedBackground = localStorage.getItem('backgroundImage');
+            if (savedBackground) {
+                document.body.style.backgroundImage = `url(${savedBackground})`;
+            }
+        });
+
+        // Naviguer vers une URL saisie
         function navigateToUrl() {
             const urlInput = document.getElementById('customUrl').value;
             let url = urlInput.trim();
 
-            // Ajouter "https://" si nécessaire
             if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
                 url = 'https://' + url;
             }
 
-            // Vérifier si l'URL est valide
             try {
                 new URL(url);
                 window.open(url, '_blank');
@@ -107,15 +138,24 @@
             }
         }
 
+        // Changer l'arrière-plan et sauvegarder dans le localStorage
         function changeBackground(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.body.style.backgroundImage = `url(${e.target.result})`;
+                    const imageUrl = e.target.result;
+                    document.body.style.backgroundImage = `url(${imageUrl})`;
+                    localStorage.setItem('backgroundImage', imageUrl);
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Réinitialiser l'arrière-plan
+        function resetBackground() {
+            document.body.style.backgroundImage = '';
+            localStorage.removeItem('backgroundImage');
         }
     </script>
 </body>
