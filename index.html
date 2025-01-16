@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navigation Rapide</title>
     <style>
+        :root {
+    --background-color: #333;
+    --text-color: #fff;
+    --link-color: #0078d4;
+    --button-color: #28a745;
+    --button-hover-color: #218838;
+}
+
+body.light-mode {
+    --background-color: #f4f4f9;
+    --text-color: #333;
+    --link-color: #005a9e;
+    --button-color: #0078d4;
+    --button-hover-color: #005a9e;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+.quick-links a {
+    background-color: var(--link-color);
+}
+.quick-links a:hover,
+button:hover {
+    background-color: var(--button-hover-color);
+}
+button {
+    background-color: var(--button-color);
+}
+
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -166,6 +197,8 @@
         <button onclick="setDefaultBackground(2)">Background 2</button>
         <button onclick="setDefaultBackground(3)">Background 3</button>
         <button onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
+        <button onclick="toggleTheme()">Basculer Mode ☀️/🌙</button>
+
     </div>
 
     <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
@@ -199,6 +232,21 @@
             }
             renderHistory();
         });
+
+        function toggleTheme() {
+    const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    document.body.classList.toggle('light-mode', newTheme === 'light');
+    localStorage.setItem('theme', newTheme);
+}
+
+// Appliquer le thème au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.classList.toggle('light-mode', savedTheme === 'light');
+});
+
 
         // Naviguer vers une URL saisie
         function navigateToUrl() {
