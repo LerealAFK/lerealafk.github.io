@@ -8,12 +8,10 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            padding: 0;
-            margin: 0;
-            height: 100vh; /* Prendre toute la hauteur de la fenêtre */
-            background-image: url('https://s1.1zoom.me/big0/516/Canada_Sunrises_and_481433.jpg'); /* Image de base 1 */
-            background-size: cover; /* L'image prend toute la taille de la page */
-            background-position: center; /* Centrer l'image */
+            padding: 20px;
+            background-image: url('https://s1.1zoom.me/big0/516/Canada_Sunrises_and_481433.jpg');
+            background-size: cover;
+            background-position: center;
             background-color: #f4f4f9;
             color: #333;
             transition: background 0.5s ease-in-out;
@@ -91,17 +89,40 @@
         #settingsButton:hover {
             background-color: #005a9e;
         }
+        #historyButton {
+            margin-top: 20px;
+            background-color: #f0ad4e;
+        }
+        #historyMenu {
+            position: absolute;
+            top: 50px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+        #historyMenu ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #historyMenu li {
+            margin-bottom: 10px;
+        }
+        #historyMenu li a {
+            color: #0078d4;
+            text-decoration: none;
+        }
+        #historyMenu li a:hover {
+            color: #005a9e;
+        }
     </style>
 </head>
 <body>
     <h1>Navigation Rapide</h1>
     <p>Sélectionnez un lien rapide ou entrez une URL personnalisée.</p>
-
-    <!-- Barre d'accès -->
-    <div class="custom-url">
-        <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
-        <button onclick="navigateToUrl()">Aller</button>
-    </div>
 
     <div class="quick-links">
         <a href="https://www.google.com" target="_blank">Google</a>
@@ -111,7 +132,13 @@
         <a href="https://www.github.com" target="_blank">GitHub</a>
     </div>
 
-    <!-- Menu déroulant -->
+    <div class="custom-url">
+        <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
+        <button onclick="navigateToUrl()">Aller</button>
+    </div>
+
+    <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
+
     <div class="settings-menu" id="settingsMenu">
         <button onclick="selectFile()">Choisir une image locale</button>
         <button onclick="setDefaultBackground(1)">Background 1</button>
@@ -120,18 +147,25 @@
         <button onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
     </div>
 
-    <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
-
     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="changeBackground(event)">
 
+    <!-- Button to toggle history -->
+    <button id="historyButton" onclick="toggleHistoryMenu()">Historique</button>
+
+    <!-- History Menu -->
+    <div id="historyMenu">
+        <ul id="historyList"></ul>
+    </div>
+
     <script>
-        // Images de base
         const defaultBackgrounds = [
             'https://cdn.futura-sciences.com/buildsv6/images/wide1920/3/f/1/3f185f8274_104658_opera-sydney-histoire.jpg', // Paysage nature
             'https://www.tripsavvy.com/thmb/7Sp-hbTMterzg49RKp0LMUP8y9Y=/2119x1415/filters:fill(auto,1)/MontBlancGettyIWestend61-59329c745f9b589eb44e83cf.jpg', // Montagnes
             'https://s1.1zoom.me/big0/516/Canada_Sunrises_and_481433.jpg'  // Arbres et coucher de soleil
         ];
 
+        // Load history from localStorage
+        let history = JSON.parse(localStorage.getItem('history')) || [];
 
         // Naviguer vers une URL saisie
         function navigateToUrl() {
@@ -145,9 +179,46 @@
             try {
                 new URL(url);
                 window.open(url, '_blank');
+                addToHistory(url);
             } catch (e) {
                 alert('URL invalide. Veuillez entrer une URL correcte.');
             }
+        }
+
+        // Ajouter une page à l'historique
+        function addToHistory(url) {
+            if (!history.includes(url)) {
+                history.push(url);
+                localStorage.setItem('history', JSON.stringify(history));
+                displayHistory();
+            }
+        }
+
+        // Afficher l'historique
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            history.forEach(url => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = url;
+                link.target = '_blank';
+                link.textContent = url;
+                listItem.appendChild(link);
+                historyList.appendChild(listItem);
+            });
+        }
+
+        // Toggle history menu visibility
+        function toggleHistoryMenu() {
+            const historyMenu = document.getElementById('historyMenu');
+            historyMenu.style.display = historyMenu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Afficher/masquer le menu des paramètres
+        function toggleSettingsMenu() {
+            const settingsMenu = document.getElementById('settingsMenu');
+            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
         }
 
         // Changer l'arrière-plan avec un fichier local
@@ -181,11 +252,8 @@
             localStorage.setItem('backgroundImage', defaultBackgrounds[0]);
         }
 
-        // Afficher/masquer le menu des paramètres
-        function toggleSettingsMenu() {
-            const settingsMenu = document.getElementById('settingsMenu');
-            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
-        }
+        // Charger l'historique au démarrage
+        displayHistory();
     </script>
 </body>
 </html>
