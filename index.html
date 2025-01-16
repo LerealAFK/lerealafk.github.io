@@ -9,6 +9,7 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
+            background-image: url('https://via.placeholder.com/1920x1080/FFB6C1/FFFFFF?text=Image+1');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -33,6 +34,16 @@
         }
         .quick-links a:hover {
             background-color: #005a9e;
+        }
+        .custom-url {
+            margin: 20px 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
         button {
             padding: 10px 20px;
@@ -84,8 +95,14 @@
     <h1>Navigation Rapide</h1>
     <p>Sélectionnez un lien rapide ou entrez une URL personnalisée.</p>
 
+    <!-- Barre d'accès -->
+    <div class="custom-url">
+        <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
+        <button onclick="navigateToUrl()">Aller</button>
+    </div>
+
     <div class="quick-links">
-        <a href="https://www.google.com" target="_blank">Gogle</a>
+        <a href="https://www.google.com" target="_blank">Google</a>
         <a href="https://www.qwant.com" target="_blank">Qwant</a>
         <a href="https://www.duckduckgo.com" target="_blank">DuckDuckGo</a>
         <a href="https://www.youtube.com" target="_blank">YouTube</a>
@@ -113,15 +130,22 @@
             'https://via.placeholder.com/1920x1080/90EE90/FFFFFF?text=Image+3'  // Image 3
         ];
 
-        // Charger l'arrière-plan par défaut ou celui enregistré
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedBackground = localStorage.getItem('backgroundImage');
-            if (savedBackground) {
-                document.body.style.backgroundImage = `url(${savedBackground})`;
-            } else {
-                document.body.style.backgroundImage = `url(${defaultBackgrounds[0]})`; // Par défaut : Image 1
+        // Naviguer vers une URL saisie
+        function navigateToUrl() {
+            const urlInput = document.getElementById('customUrl').value;
+            let url = urlInput.trim();
+
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
             }
-        });
+
+            try {
+                new URL(url);
+                window.open(url, '_blank');
+            } catch (e) {
+                alert('URL invalide. Veuillez entrer une URL correcte.');
+            }
+        }
 
         // Changer l'arrière-plan avec un fichier local
         function selectFile() {
@@ -150,8 +174,8 @@
 
         // Réinitialiser l'arrière-plan
         function resetBackground() {
-            document.body.style.backgroundImage = '';
-            localStorage.removeItem('backgroundImage');
+            document.body.style.backgroundImage = `url(${defaultBackgrounds[0]})`;
+            localStorage.setItem('backgroundImage', defaultBackgrounds[0]);
         }
 
         // Afficher/masquer le menu des paramètres
