@@ -99,6 +99,49 @@
         .background-options button:hover {
             background-color: #005a9e;
         }
+        /* Style pour le bouton Paramètres et le menu déroulant */
+        #settings-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+        }
+        #settings-btn:hover {
+            background-color: #005a9e;
+        }
+        .settings-menu {
+            display: none;
+            position: fixed;
+            bottom: 70px;
+            left: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 200px;
+        }
+        .settings-menu button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .settings-menu button:hover {
+            background-color: #005a9e;
+        }
     </style>
 </head>
 <body>
@@ -129,6 +172,15 @@
     <input type="file" id="bgUploader" accept="image/*" onchange="changeBackground(event)">
     <button id="resetBg" onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
 
+    <!-- Paramètres (menu déroulant) -->
+    <button id="settings-btn" onclick="toggleSettingsMenu()">Paramètres</button>
+
+    <div class="settings-menu" id="settings-menu">
+        <button onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
+        <button onclick="resetQuickLinks()">Réinitialiser les liens rapides</button>
+        <button onclick="changeBackground()">Changer l'arrière-plan</button>
+    </div>
+
     <script>
         // Charger l'image d'arrière-plan depuis le localStorage
         document.addEventListener('DOMContentLoaded', () => {
@@ -157,7 +209,7 @@
 
         // Changer l'arrière-plan et sauvegarder dans le localStorage
         function changeBackground(event) {
-            const file = event.target.files[0];
+            const file = event.target?.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -179,6 +231,17 @@
         function setDefaultBackground(imageUrl) {
             document.body.style.backgroundImage = `url(${imageUrl})`;
             localStorage.setItem('backgroundImage', imageUrl);
+        }
+
+        // Toggle menu déroulant
+        function toggleSettingsMenu() {
+            const settingsMenu = document.getElementById('settings-menu');
+            settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Réinitialiser les liens rapides (Exemple)
+        function resetQuickLinks() {
+            alert("Réinitialisation des liens rapides !");
         }
     </script>
 </body>
