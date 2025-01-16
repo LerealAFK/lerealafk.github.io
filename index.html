@@ -11,42 +11,133 @@
             padding: 20px;
             background-size: cover; /* Par défaut, couvrir l'écran */
             background-position: center;
-            background-repeat: no-repeat; /* Pas de répétition */
+            background-repeat: no-repeat;
             background-color: #f4f4f9;
             color: #333;
             transition: background 0.5s ease-in-out;
         }
 
-        h1 { color: #555; }
-        .quick-links, .custom-url { margin: 20px 0; }
-        .quick-links a { 
-            text-decoration: none; 
-            margin: 5px; 
-            padding: 10px 15px; 
-            color: white; 
-            background-color: #0078d4; 
-            border-radius: 5px; 
-            display: inline-block; 
+        h1 {
+            color: #555;
         }
-        .quick-links a:hover { background-color: #005a9e; }
-        .history-container { 
-            margin: 20px; 
-            border: 1px solid #ccc; 
-            padding: 15px; 
-            border-radius: 5px; 
-            background: #fff; 
+
+        .quick-links {
+            margin: 20px 0;
         }
-        .history-container button { margin-top: 10px; }
-        button { 
-            cursor: pointer; 
-            padding: 10px; 
-            margin: 10px; 
-            background-color: #28a745; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
+
+        .quick-links a {
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 10px 20px;
+            color: white;
+            background-color: #0078d4;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
-        button:hover { background-color: #218838; }
+
+        .quick-links a:hover {
+            background-color: #005a9e;
+        }
+
+        .custom-url {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .settings-menu {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            left: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .settings-menu button {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        #settingsButton {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #settingsButton:hover {
+            background-color: #005a9e;
+        }
+
+        .history-container {
+            margin: 20px auto;
+            max-width: 600px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            display: none;
+        }
+
+        .history-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .history-container ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .history-container ul li:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-history {
+            background-color: #0078d4;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .toggle-history:hover {
+            background-color: #005a9e;
+        }
     </style>
 </head>
 <body>
@@ -65,16 +156,32 @@
         <a href="https://www.qwant.com" target="_blank" onclick="addToHistory('Qwant')">Qwant</a>
         <a href="https://www.duckduckgo.com" target="_blank" onclick="addToHistory('DuckDuckGo')">DuckDuckGo</a>
         <a href="https://www.youtube.com" target="_blank" onclick="addToHistory('YouTube')">YouTube</a>
+        <a href="https://www.github.com" target="_blank" onclick="addToHistory('GitHub')">GitHub</a>
     </div>
 
+    <!-- Menu déroulant -->
+    <div class="settings-menu" id="settingsMenu">
+        <button onclick="selectFile()">Choisir une image locale</button>
+        <button onclick="setDefaultBackground(1)">Background 1</button>
+        <button onclick="setDefaultBackground(2)">Background 2</button>
+        <button onclick="setDefaultBackground(3)">Background 3</button>
+        <button onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
+    </div>
+
+    <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
+
     <!-- Historique -->
+    <button class="toggle-history" onclick="toggleHistory()">Afficher/Masquer l'historique</button>
     <div class="history-container" id="historyContainer">
         <h2>Historique</h2>
         <ul id="historyList"></ul>
         <button onclick="clearHistory()">🗑️ Effacer l'historique</button>
     </div>
 
+    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="changeBackground(event)">
+
     <script>
+        // Images de base
         const defaultBackgrounds = [
             'https://cdn.futura-sciences.com/buildsv6/images/wide1920/3/f/1/3f185f8274_104658_opera-sydney-histoire.jpg',
             'https://www.tripsavvy.com/thmb/7Sp-hbTMterzg49RKp0LMUP8y9Y=/2119x1415/filters:fill(auto,1)/MontBlancGettyIWestend61-59329c745f9b589eb44e83cf.jpg',
@@ -83,78 +190,70 @@
 
         // Initialisation au lancement de la page
         document.addEventListener('DOMContentLoaded', () => {
-            // Charger le fond d'écran
             const savedBackground = localStorage.getItem('backgroundImage');
             if (savedBackground) {
-                document.body.style.backgroundImage = `url(${savedBackground})`;
-                adjustBackgroundScaling(savedBackground);
+                setBackground(savedBackground);
             } else {
-                const defaultImage = defaultBackgrounds[0];
-                document.body.style.backgroundImage = `url(${defaultImage})`;
-                localStorage.setItem('backgroundImage', defaultImage);
-                adjustBackgroundScaling(defaultImage);
+                setBackground(defaultBackgrounds[0]);
+                localStorage.setItem('backgroundImage', defaultBackgrounds[0]);
             }
-
-            // Charger l'historique
-            const history = JSON.parse(localStorage.getItem('history')) || [];
-            renderHistory(history);
+            renderHistory();
         });
 
-        // Naviguer vers une URL saisie
-        function navigateToUrl() {
-            const urlInput = document.getElementById('customUrl').value.trim();
-            let url = urlInput;
-
-            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
-
-            try {
-                new URL(url);
-                addToHistory(urlInput); // Ajouter à l'historique
-                window.open(url, '_blank');
-            } catch (e) {
-                alert('URL invalide. Veuillez entrer une URL correcte.');
-            }
-        }
-
-        // Ajouter un élément à l'historique
+        // Gérer l'historique
         function addToHistory(item) {
             const history = JSON.parse(localStorage.getItem('history')) || [];
-            history.unshift(item); // Ajouter au début
+            history.unshift(item);
             localStorage.setItem('history', JSON.stringify(history));
-            renderHistory(history);
+            renderHistory();
         }
 
-        // Afficher l'historique
-        function renderHistory(history) {
+        function renderHistory() {
             const historyList = document.getElementById('historyList');
-            historyList.innerHTML = '';
-            history.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.textContent = item;
-                historyList.appendChild(li);
-            });
+            const history = JSON.parse(localStorage.getItem('history')) || [];
+            historyList.innerHTML = history.map(item => `<li>${item}</li>`).join('');
         }
 
-        // Effacer l'historique
         function clearHistory() {
             localStorage.removeItem('history');
-            renderHistory([]);
+            renderHistory();
         }
 
-        // Ajuster le mode d'affichage du fond d'écran
-        function adjustBackgroundScaling(imageUrl) {
-            const img = new Image();
-            img.onload = function() {
-                const aspectRatio = this.width / this.height;
-                if (aspectRatio >= 1) {
-                    document.body.style.backgroundSize = 'cover'; // Paysage ou format large
-                } else {
-                    document.body.style.backgroundSize = 'contain'; // Portrait ou format étroit
-                }
-            };
-            img.src = imageUrl;
+        function toggleHistory() {
+            const container = document.getElementById('historyContainer');
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Gérer le fond d'écran
+        function setBackground(imageUrl) {
+            document.body.style.backgroundImage = `url(${imageUrl})`;
+        }
+
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    setBackground(e.target.result);
+                    localStorage.setItem('backgroundImage', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function setDefaultBackground(index) {
+            const imageUrl = defaultBackgrounds[index - 1];
+            setBackground(imageUrl);
+            localStorage.setItem('backgroundImage', imageUrl);
+        }
+
+        function resetBackground() {
+            setDefaultBackground(1);
+        }
+
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settingsMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
     </script>
 </body>
