@@ -89,6 +89,16 @@
         #resetBg:hover {
             background-color: #d32f2f;
         }
+        .background-options {
+            margin-top: 20px;
+        }
+        .background-options button {
+            background-color: #0078d4;
+            margin: 5px;
+        }
+        .background-options button:hover {
+            background-color: #005a9e;
+        }
     </style>
 </head>
 <body>
@@ -107,6 +117,13 @@
     <div class="custom-url">
         <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
         <button onclick="navigateToUrl()">Aller</button>
+    </div>
+
+    <!-- Sélectionner l'arrière-plan -->
+    <div class="background-options">
+        <button onclick="setDefaultBackground('https://via.placeholder.com/1200x800/0000FF/808080?Text=Background1')">Arrière-plan 1</button>
+        <button onclick="setDefaultBackground('https://via.placeholder.com/1200x800/FF6347/FFFFFF?Text=Background2')">Arrière-plan 2</button>
+        <button onclick="setDefaultBackground('https://via.placeholder.com/1200x800/32CD32/FFFFFF?Text=Background3')">Arrière-plan 3</button>
     </div>
 
     <input type="file" id="bgUploader" accept="image/*" onchange="changeBackground(event)">
@@ -156,6 +173,12 @@
         function resetBackground() {
             document.body.style.backgroundImage = '';
             localStorage.removeItem('backgroundImage');
+        }
+
+        // Sélectionner un arrière-plan de base
+        function setDefaultBackground(imageUrl) {
+            document.body.style.backgroundImage = `url(${imageUrl})`;
+            localStorage.setItem('backgroundImage', imageUrl);
         }
     </script>
 </body>
