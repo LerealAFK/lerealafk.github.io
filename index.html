@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Navigation Rapide">
+    <link rel="apple-touch-icon" href="IMG_2952.jpeg">
     <title>Navigation Rapide</title>
     <style>
         body {
@@ -24,13 +26,10 @@
         }
         .quick-links {
             margin: 20px 0;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
         }
         .quick-links a {
             text-decoration: none;
-            margin: 10px;
+            margin: 0 10px;
             padding: 10px 20px;
             color: white;
             background-color: #0078d4;
@@ -49,7 +48,6 @@
             max-width: 400px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            margin-bottom: 10px;
         }
         button {
             padding: 10px 20px;
@@ -64,11 +62,32 @@
         button:hover {
             background-color: #218838;
         }
-        #addQuickLink {
-            background-color: #0078d4;
+        #bgUploader {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        #addQuickLink:hover {
-            background-color: #005a9e;
+        #bgUploader:hover {
+            background-color: #e68900;
+        }
+        #resetBg {
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #resetBg:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
@@ -76,96 +95,68 @@
     <h1>Navigation Rapide</h1>
     <p>Sélectionnez un lien rapide ou entrez une URL personnalisée.</p>
 
-    <!-- Zone des Quick Links -->
-    <div class="quick-links" id="quickLinks"></div>
+    <div class="quick-links">
+        <a href="https://www.google.com" target="_blank">Google</a>
+        <a href="https://www.qwant.com" target="_blank">Qwant</a>
+        <a href="https://www.duckduckgo.com" target="_blank">DuckDuckGo</a>
+        <a href="https://www.youtube.com" target="_blank">YouTube</a>
+        <a href="https://www.github.com" target="_blank">GitHub</a>
+        <a href="https://chatgpt.com" target="_blank">ChatGPT</a>
+    </div>
 
-    <!-- Ajouter un lien personnalisé -->
     <div class="custom-url">
-        <input type="text" id="linkName" placeholder="Nom du lien (ex. DuckDuckGo)">
-        <input type="text" id="linkUrl" placeholder="URL du lien (ex. https://duckduckgo.com)">
-        <button id="addQuickLink">Ajouter un lien</button>
+        <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
+        <button onclick="navigateToUrl()">Aller</button>
     </div>
 
-    <!-- Changer le fond d'écran -->
-    <div>
-        <input type="file" id="backgroundInput" accept="image/*">
-        <button id="changeBackground">Changer le fond d'écran</button>
-    </div>
+    <input type="file" id="bgUploader" accept="image/*" onchange="changeBackground(event)">
+    <button id="resetBg" onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
 
     <script>
-        // Charger les Quick Links et le fond d'écran depuis le localStorage
+        // Charger l'image d'arrière-plan depuis le localStorage
         document.addEventListener('DOMContentLoaded', () => {
-            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [
-                { name: 'DuckDuckGo', url: 'https://duckduckgo.com' }
-            ];
             const savedBackground = localStorage.getItem('backgroundImage');
-
-            renderQuickLinks(savedLinks);
-
             if (savedBackground) {
                 document.body.style.backgroundImage = `url(${savedBackground})`;
             }
         });
 
-        // Ajouter un Quick Link
-        document.getElementById('addQuickLink').addEventListener('click', () => {
-            const linkName = document.getElementById('linkName').value.trim();
-            let linkUrl = document.getElementById('linkUrl').value.trim();
+        // Naviguer vers une URL saisie
+        function navigateToUrl() {
+            const urlInput = document.getElementById('customUrl').value;
+            let url = urlInput.trim();
 
-            if (!linkName || !linkUrl) {
-                alert("Veuillez saisir un nom et une URL valides.");
-                return;
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
             }
 
-            // Ajouter "https://" si nécessaire
-            if (!linkUrl.startsWith('http://') && !linkUrl.startsWith('https://')) {
-                linkUrl = 'https://' + linkUrl;
+            try {
+                new URL(url);
+                window.open(url, '_blank');
+            } catch (e) {
+                alert('URL invalide. Veuillez entrer une URL correcte.');
             }
-
-            const newLink = { name: linkName, url: linkUrl };
-
-            // Récupérer les liens existants, ajouter le nouveau et sauvegarder
-            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [];
-            savedLinks.push(newLink);
-            localStorage.setItem('quickLinks', JSON.stringify(savedLinks));
-
-            // Mettre à jour l'affichage
-            renderQuickLinks(savedLinks);
-
-            // Réinitialiser les champs d'entrée
-            document.getElementById('linkName').value = '';
-            document.getElementById('linkUrl').value = '';
-        });
-
-        // Afficher les Quick Links
-        function renderQuickLinks(links) {
-            const quickLinksContainer = document.getElementById('quickLinks');
-            quickLinksContainer.innerHTML = '';
-
-            links.forEach(link => {
-                const linkElement = document.createElement('a');
-                linkElement.href = link.url;
-                linkElement.textContent = link.name;
-                linkElement.target = '_blank';
-                quickLinksContainer.appendChild(linkElement);
-            });
         }
 
-        // Changer le fond d'écran
-        document.getElementById('changeBackground').addEventListener('click', () => {
-            const backgroundInput = document.getElementById('backgroundInput');
-            if (backgroundInput.files && backgroundInput.files[0]) {
+        // Changer l'arrière-plan et sauvegarder dans le localStorage
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (file) {
                 const reader = new FileReader();
-                reader.onload = (e) => {
+                reader.onload = function(e) {
                     const imageUrl = e.target.result;
                     document.body.style.backgroundImage = `url(${imageUrl})`;
                     localStorage.setItem('backgroundImage', imageUrl);
                 };
-                reader.readAsDataURL(backgroundInput.files[0]);
-            } else {
-                alert("Veuillez sélectionner une image valide.");
+                reader.readAsDataURL(file);
             }
-        });
+        }
+
+        // Réinitialiser l'arrière-plan
+        function resetBackground() {
+            document.body.style.backgroundImage = '';
+            localStorage.removeItem('backgroundImage');
+        }
     </script>
 </body>
 </html>
