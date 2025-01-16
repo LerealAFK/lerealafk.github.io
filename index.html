@@ -28,34 +28,17 @@
             flex-wrap: wrap;
             justify-content: center;
         }
-        .quick-link {
-            margin: 10px;
-            display: flex;
-            align-items: center;
-        }
-        .quick-link a {
+        .quick-links a {
             text-decoration: none;
+            margin: 10px;
             padding: 10px 20px;
             color: white;
             background-color: #0078d4;
             border-radius: 5px;
-            margin-right: 5px;
             transition: background-color 0.3s ease;
         }
-        .quick-link a:hover {
+        .quick-links a:hover {
             background-color: #005a9e;
-        }
-        .quick-link button {
-            background-color: #f44336;
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .quick-link button:hover {
-            background-color: #d32f2f;
         }
         .custom-url {
             margin: 20px 0;
@@ -98,16 +81,30 @@
 
     <!-- Ajouter un lien personnalisé -->
     <div class="custom-url">
-        <input type="text" id="linkName" placeholder="Nom du lien (ex. Google)">
-        <input type="text" id="linkUrl" placeholder="URL du lien (ex. https://google.com)">
-        <button id="addQuickLink">+</button>
+        <input type="text" id="linkName" placeholder="Nom du lien (ex. DuckDuckGo)">
+        <input type="text" id="linkUrl" placeholder="URL du lien (ex. https://duckduckgo.com)">
+        <button id="addQuickLink">Ajouter un lien</button>
+    </div>
+
+    <!-- Changer le fond d'écran -->
+    <div>
+        <input type="file" id="backgroundInput" accept="image/*">
+        <button id="changeBackground">Changer le fond d'écran</button>
     </div>
 
     <script>
-        // Charger les Quick Links depuis le localStorage
+        // Charger les Quick Links et le fond d'écran depuis le localStorage
         document.addEventListener('DOMContentLoaded', () => {
-            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [];
+            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [
+                { name: 'DuckDuckGo', url: 'https://duckduckgo.com' }
+            ];
+            const savedBackground = localStorage.getItem('backgroundImage');
+
             renderQuickLinks(savedLinks);
+
+            if (savedBackground) {
+                document.body.style.backgroundImage = `url(${savedBackground})`;
+            }
         });
 
         // Ajouter un Quick Link
@@ -145,32 +142,30 @@
             const quickLinksContainer = document.getElementById('quickLinks');
             quickLinksContainer.innerHTML = '';
 
-            links.forEach((link, index) => {
-                const linkElement = document.createElement('div');
-                linkElement.className = 'quick-link';
-
-                const anchor = document.createElement('a');
-                anchor.href = link.url;
-                anchor.textContent = link.name;
-                anchor.target = '_blank';
-
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = '🗑️';
-                deleteButton.onclick = () => deleteQuickLink(index);
-
-                linkElement.appendChild(anchor);
-                linkElement.appendChild(deleteButton);
+            links.forEach(link => {
+                const linkElement = document.createElement('a');
+                linkElement.href = link.url;
+                linkElement.textContent = link.name;
+                linkElement.target = '_blank';
                 quickLinksContainer.appendChild(linkElement);
             });
         }
 
-        // Supprimer un Quick Link
-        function deleteQuickLink(index) {
-            const savedLinks = JSON.parse(localStorage.getItem('quickLinks')) || [];
-            savedLinks.splice(index, 1);
-            localStorage.setItem('quickLinks', JSON.stringify(savedLinks));
-            renderQuickLinks(savedLinks);
-        }
+        // Changer le fond d'écran
+        document.getElementById('changeBackground').addEventListener('click', () => {
+            const backgroundInput = document.getElementById('backgroundInput');
+            if (backgroundInput.files && backgroundInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageUrl = e.target.result;
+                    document.body.style.backgroundImage = `url(${imageUrl})`;
+                    localStorage.setItem('backgroundImage', imageUrl);
+                };
+                reader.readAsDataURL(backgroundInput.files[0]);
+            } else {
+                alert("Veuillez sélectionner une image valide.");
+            }
+        });
     </script>
 </body>
 </html>
