@@ -39,9 +39,11 @@
         body {
             background-color: var(--background-color);
             color: var(--text-color);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-size: cover; /* Ajuste pour couvrir l'intégralité de l'écran */
+            background-position: center; /* Centre l'image */
+            background-repeat: no-repeat; /* Évite les répétitions de l'image */
+            height: 100vh; /* S'assure que la hauteur couvre 100% de la fenêtre */
+            margin: 0; /* Retire les marges du body pour éviter tout décalage */
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
