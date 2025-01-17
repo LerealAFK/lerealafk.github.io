@@ -201,6 +201,41 @@
             transform: scale(0.95); /* Réduction au clic */
         }
 
+        #addQuickLinkContainer {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            display: flex;        
+            gap: 10px;        
+            justify-content: center;
+        }
+
+        #addQuickLinkButton {
+            position: fixed;
+            bottom: 10px;
+            right: 60px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #addQuickLinkButton:hover {
+            background-color: #218838;
+        }
+
+        #addQuickLinkContainer input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -223,6 +258,15 @@
         <a href="https://www.github.com" target="_blank" onclick="addToHistory('GitHub')">GitHub</a>
         <a href="https://chatgpt.com" target="_blank" onclick="addToHistory('Chatgpt')">Chatgpt</a>
     </div>
+
+    <!-- Formulaire d'ajout de Quick Link -->
+        <div id="addQuickLinkContainer" style="display: none;">
+            <input type="text" id="quickLinkName" placeholder="Nom du lien" />
+            <input type="text" id="quickLinkUrl" placeholder="URL (ex: https://example.com)" />
+            <button onclick="handleAddQuickLink()">Ajouter le lien</button>
+        </div>
+        <button id="addQuickLinkButton" onclick="toggleAddQuickLink()">➕ Ajouter un Quick Link</button>
+
 
     <!-- Menu déroulant -->
     <div class="settings-menu" id="settingsMenu">
@@ -469,6 +513,60 @@
             const menu = document.getElementById('settingsMenu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
+
+        function toggleAddQuickLink() {
+    const container = document.getElementById('addQuickLinkContainer');
+    container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+}
+
+function handleAddQuickLink() {
+    const name = document.getElementById('quickLinkName').value.trim();
+    const url = document.getElementById('quickLinkUrl').value.trim();
+
+    if (!name || !url) {
+        alert('Veuillez remplir les deux champs.');
+        return;
+    }
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        alert('Veuillez entrer une URL valide commençant par "http://" ou "https://".');
+        return;
+    }
+
+    addQuickLink(name, url);
+    renderQuickLinks(); // Met à jour l'affichage des quick links
+    toggleAddQuickLink(); // Ferme le formulaire
+}
+
+function addQuickLink(name, url) {
+    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
+    quickLinks[name] = url;
+    localStorage.setItem('quickLinks', JSON.stringify(quickLinks));
+    alert(`Quick link ajouté : ${name}`);
+}
+
+function renderQuickLinks() {
+    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
+    const container = document.querySelector('.quick-links');
+
+    container.innerHTML = ''; // Vide les quick links avant de les recharger
+
+    for (const [name, url] of Object.entries(quickLinks)) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.textContent = name;
+        link.onclick = () => addToHistory(name);
+
+        container.appendChild(link);
+    }
+}
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    renderQuickLinks();
+});
+
     </script>
 </body>
 </html>
