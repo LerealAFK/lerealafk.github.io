@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            color: #0078d4;
+        }
+
+        .login-container {
+            margin: 50px auto;
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="password"] {
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            color: white;
+            background-color: #0078d4;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005a9e;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Connexion</h1>
+    <div class="login-container">
+        <p>Veuillez entrer votre mot de passe :</p>
+        <input type="password" id="password" placeholder="Mot de passe">
+        <div id="errorMessage" class="error"></div>
+        <button onclick="checkPassword()">Se connecter</button>
+    </div>
+
+    <script>
+        // Mot de passe attendu
+        const correctPassword = "messengeria2025";
+
+        // Vérification du mot de passe
+        function checkPassword() {
+            const passwordInput = document.getElementById("password").value;
+
+            if (passwordInput === correctPassword) {
+                // Sauvegarder l'état de connexion dans le localStorage
+                localStorage.setItem("isConnected", "true");
+                // Rediriger vers la page navigateur.html
+                window.location.href = "navigateur.html";
+            } else {
+                // Afficher un message d'erreur si le mot de passe est incorrect
+                document.getElementById("errorMessage").textContent = "Mot de passe incorrect. Veuillez réessayer.";
+            }
+        }
+
+        // Vérification de l'état de connexion
+        document.addEventListener("DOMContentLoaded", () => {
+            const isConnected = localStorage.getItem("isConnected");
+            if (isConnected === "true") {
+                // Rediriger automatiquement si l'utilisateur est déjà connecté
+                window.location.href = "navigateur.html";
+            }
+        });
+    </script>
+</body>
+</html>
