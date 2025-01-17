@@ -171,6 +171,36 @@
         .toggle-history:hover {
             background-color: var(--button-hover-color);
         }
+
+        #voiceSearchButton {
+            position: fixed; /* Fixe le bouton par rapport à l'écran */
+            bottom: 20px;    /* Distance du bas de l'écran */
+            right: 20px;     /* Distance du côté droit de l'écran */
+            width: 60px;     /* Largeur du bouton */
+            height: 60px;    /* Hauteur du bouton (égal à la largeur pour le rendre rond) */
+            background-color: #4CAF50; /* Couleur de fond */
+            color: white;    /* Couleur du texte/icone */
+            border: none;    /* Pas de bordure */
+            border-radius: 50%; /* Rond */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Ombre pour effet 3D */
+            cursor: pointer; /* Curseur en forme de main */
+            font-size: 24px; /* Taille du texte/icone */
+            display: flex;   /* Centrer le contenu */           
+            align-items: center; /* Aligner verticalement */
+            justify-content: center; /* Aligner horizontalement */
+            z-index: 1000; /* Toujours visible au-dessus des autres éléments */
+            transition: transform 0.2s ease, background-color 0.3s ease; /* Animation au survol */
+        }
+
+        #voiceSearchButton:hover {
+            background-color: #45a049; /* Couleur au survol */
+            transform: scale(1.1); /* Légère mise à l'échelle au survol */
+        }
+
+        #voiceSearchButton:active {
+            transform: scale(0.95); /* Réduction au clic */
+        }
+
     </style>
 </head>
 <body>
@@ -218,12 +248,72 @@
 
     <button id="showGamesButton">Afficher la liste des jeux</button>
     <ul id="gameList" style="display: none;">
-        <li><a href="https://www.minecraft.net/" target="_blank">Minecraft</a></li>
-        <li><a href="https://www.roblox.com/" target="_blank">Roblox</a></li>
-        <li><a href="https://store.steampowered.com/app/730/CounterStrike_Global_Offensive/" target="_blank">CS:GO</a></li>
+        <li><a href="https://survev.io" target="_blank">Survev</a></li>
+        <li><a href="https://www.grims.pro/" target="_blank">Grims.pro</a></li>
+        <li><a href="https://io-games-2025.github.io" target="_blank">IO-gamessdf.    c </a></li>
     </ul>
 
+    <button id="voiceSearchButton">🎙️ Parler</button>
+
+
     <script>
+        // Initialisation de l'API Web Speech
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'fr-FR'; // Langue française
+recognition.interimResults = false;
+
+// Dictionnaire des quick links
+        const quickLinks = {
+            google: "https://www.google.com",
+            qwant: "https://www.qwant.com",
+            duckduckgo: "https://www.duckduckgo.com",
+            youtube: "https://www.youtube.com",
+            github: "https://www.github.com",
+            chatgpt: "https://chatgpt.com"
+        };
+
+// Écouteur pour le bouton de recherche vocale
+        document.getElementById('voiceSearchButton').addEventListener('click', () => {
+            recognition.start();
+            alert('Parlez maintenant : dites "Ouvre [nom du lien]" ou "Recherche [termes]".');
+        });        
+
+// Fonction appelée lorsque la reconnaissance vocale a des résultats
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript.toLowerCase(); // Texte capturé
+            handleVoiceCommand(transcript);
+        };
+
+// Gérer les commandes vocales
+        function handleVoiceCommand(command) {
+    // Si la commande commence par "ouvre", essayer d'ouvrir un quick link
+            if (command.startsWith("ouvre")) {
+                const linkName = command.replace("ouvre", "").trim(); // Extraire le nom
+                if (quickLinks[linkName]) {
+                    window.open(quickLinks[linkName], "_blank");
+                    alert(`Ouverture de ${linkName}`);
+                } else {
+                    alert(`Lien rapide "${linkName}" non trouvé.`);
+                }
+            }
+    // Si la commande commence par "recherche", effectuer une recherche
+            else if (command.startsWith("recherche")) {
+                const searchQuery = command.replace("recherche", "").trim(); // Extraire les termes
+                const searchUrl = `https://www.duckduckgo.com/?q=${encodeURIComponent(searchQuery)}`;
+                window.open(searchUrl, "_blank");
+                alert(`Recherche de : "${searchQuery}"`);
+            }
+    // Si la commande n'est pas reconnue
+            else {
+                alert('Commande non reconnue. Essayez "Ouvre [nom du lien]" ou "Recherche [termes]".');
+            }
+        };
+
+// Gérer les erreurs
+        recognition.onerror = (event) => {
+            alert(`Erreur de reconnaissance vocale : ${event.error}`);
+        };
+
         const showGamesButton = document.getElementById('showGamesButton');
         const gameList = document.getElementById('gameList');
 
