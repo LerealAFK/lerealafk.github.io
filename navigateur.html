@@ -180,7 +180,8 @@
     <!-- Barre d'accès -->
     <div class="custom-url">
         <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
-        <button onclick="navigateToUrl()">Aller</button>
+        <button onclick="navigateToUrl()">GO</button>
+
     </div>
 
     <!-- Quick Links -->
@@ -223,6 +224,12 @@
             'https://s1.1zoom.me/big0/516/Canada_Sunrises_and_481433.jpg'
         ];
 
+        document.getElementById('customUrl').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                navigateToUrl();
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             const savedBackground = localStorage.getItem('backgroundImage');
             const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -238,6 +245,30 @@
             renderHistory();
         });
 
+        function navigateToUrl() {
+            const urlInput = document.getElementById('customUrl').value;
+            let url = urlInput.trim();
+
+    // Vérifie si l'input est une recherche
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        // Recherche sur DuckDuckGo
+                url = `https://duckduckgo.com/?q=${encodeURIComponent(url)}`;
+            } else if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        // Si c'est un terme sans 'http://', ajoute 'https://'
+                url = 'https://' + url;
+            }
+
+    // Si l'input est une URL valide
+            try {
+                new URL(url); // Vérifie si c'est une URL valide
+                window.open(url, '_blank');
+                addToHistory(url); // Ajoute à l'historique
+            } catch (e) {
+                alert('URL invalide. Veuillez entrer une URL correcte.');
+            }
+        }
+
+
         function toggleTheme() {
             const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -249,23 +280,7 @@
             themeToggle.innerText = newTheme === 'light' ? 'Mode 🌙' : 'Mode ☀️';
         }
 
-        function navigateToUrl() {
-            const urlInput = document.getElementById('customUrl').value;
-            let url = urlInput.trim();
-
-            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
-
-            try {
-                new URL(url);
-                window.open(url, '_blank');
-                addToHistory(url);
-            } catch {
-                alert('URL invalide. Veuillez entrer une URL correcte.');
-            }
-        }
-
+        
         // Ajouter un élément à l'historique
         function addToHistory(item) {
             const history = JSON.parse(localStorage.getItem('history')) || [];
