@@ -11,9 +11,9 @@
     
     <!-- Icônes pour les appareils Apple -->
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180x180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-touch-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="IMG_2952.jpeg">
+    <link rel="apple-touch-icon" sizes="180x180" href="IMG_2952.jpeg">
+    <link rel="apple-touch-icon" sizes="167x167" href="IMG_2952.jpeg">
 
     <title>Navigation Rapide</title>
     <style>
@@ -203,13 +203,13 @@
 
     <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
 
-    <!-- Historique -->
     <button class="toggle-history" onclick="toggleHistory()">Afficher/Masquer l'historique</button>
-    <div class="history-container" id="historyContainer">
+    <div class="history-container" id="historyContainer"
         <h2>Historique</h2>
         <ul id="historyList"></ul>
         <button onclick="clearHistory()">🗑️ Effacer l'historique</button>
     </div>
+
 
     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="changeBackground(event)">
 
@@ -264,28 +264,33 @@
             }
         }
 
+        // Ajouter un élément à l'historique
         function addToHistory(item) {
             const history = JSON.parse(localStorage.getItem('history')) || [];
-            history.unshift(item);
+            history.unshift(item); // Ajouter l'élément au début de la liste
             localStorage.setItem('history', JSON.stringify(history));
-            renderHistory();
+            renderHistory(); // Mettre à jour l'affichage
         }
 
+// Afficher l'historique
         function renderHistory() {
             const historyList = document.getElementById('historyList');
             const history = JSON.parse(localStorage.getItem('history')) || [];
             historyList.innerHTML = history.map(item => `<li>${item}</li>`).join('');
         }
 
+// Effacer l'historique
         function clearHistory() {
-            localStorage.removeItem('history');
-            renderHistory();
+            localStorage.removeItem('history'); // Supprimer l'historique du localStorage
+            renderHistory(); // Mettre à jour l'affichage
         }
 
+// Basculer l'affichage de l'historique
         function toggleHistory() {
             const container = document.getElementById('historyContainer');
             container.style.display = container.style.display === 'none' ? 'block' : 'none';
         }
+
 
         function setBackground(imageUrl) {
             document.body.style.backgroundImage = `url(${imageUrl})`;
