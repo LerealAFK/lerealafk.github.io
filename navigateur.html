@@ -257,62 +257,61 @@
 
 
     <script>
-        // Initialisation de l'API Web Speech
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = 'fr-FR'; // Langue française
-recognition.interimResults = false;
+        function startVoiceSearch() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'fr-FR'; // Définir la langue en français
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-// Dictionnaire des quick links
-        const quickLinks = {
-            google: "https://www.google.com",
-            qwant: "https://www.qwant.com",
-            duckduckgo: "https://www.duckduckgo.com",
-            youtube: "https://www.youtube.com",
-            github: "https://www.github.com",
-            chatgpt: "https://chatgpt.com"
-        };
+    // Message d'écoute activée
+    alert('Écoute activée, parlez maintenant...');
+    
+    recognition.start();
 
-// Écouteur pour le bouton de recherche vocale
-        document.getElementById('voiceSearchButton').addEventListener('click', () => {
-            recognition.start();
-            alert('Parlez maintenant : dites "Ouvre [nom du lien]" ou "Recherche [termes]".');
-        });        
+    recognition.onresult = function (event) {
+        const command = event.results[0][0].transcript.toLowerCase();
+        console.log('Command received:', command);
 
-// Fonction appelée lorsque la reconnaissance vocale a des résultats
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript.toLowerCase(); // Texte capturé
-            handleVoiceCommand(transcript);
-        };
+        // Vérifie si la commande contient "ouvre" suivi d'un quick link
+        if (command.startsWith('ouvre')) {
+            const quickLinks = {
+                google: 'https://www.google.com',
+                qwant: 'https://www.qwant.com',
+                youtube: 'https://www.youtube.com',
+                github: 'https://www.github.com',
+                chatgpt: 'https://chat.openai.com',
+            };
 
-// Gérer les commandes vocales
-        function handleVoiceCommand(command) {
-    // Si la commande commence par "ouvre", essayer d'ouvrir un quick link
-            if (command.startsWith("ouvre")) {
-                const linkName = command.replace("ouvre", "").trim(); // Extraire le nom
-                if (quickLinks[linkName]) {
-                    window.open(quickLinks[linkName], "_blank");
-                    alert(`Ouverture de ${linkName}`);
-                } else {
-                    alert(`Lien rapide "${linkName}" non trouvé.`);
-                }
+            // Extrait le mot après "ouvre"
+            const site = command.replace('ouvre', '').trim();
+
+            if (quickLinks[site]) {
+                window.open(quickLinks[site], '_blank');
+                alert(`Ouverture de ${site}...`);
+            } else {
+                alert("Site non reconnu. Essayez un site comme 'Google' ou 'YouTube'.");
             }
-    // Si la commande commence par "recherche", effectuer une recherche
-            else if (command.startsWith("recherche")) {
-                const searchQuery = command.replace("recherche", "").trim(); // Extraire les termes
-                const searchUrl = `https://www.duckduckgo.com/?q=${encodeURIComponent(searchQuery)}`;
-                window.open(searchUrl, "_blank");
-                alert(`Recherche de : "${searchQuery}"`);
-            }
-    // Si la commande n'est pas reconnue
-            else {
-                alert('Commande non reconnue. Essayez "Ouvre [nom du lien]" ou "Recherche [termes]".');
-            }
-        };
+        } 
+        // Vérifie si la commande commence par "recherche"
+        else if (command.startsWith('recherche')) {
+            const query = command.replace('recherche', '').trim();
+            const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
+            window.open(searchUrl, '_blank');
+            alert(`Recherche de : ${query}`);
+        } else {
+            alert("Commande non reconnue. Essayez 'Ouvre Google' ou 'Recherche ChatGPT'.");
+        }
+    };
 
-// Gérer les erreurs
-        recognition.onerror = (event) => {
-            alert(`Erreur de reconnaissance vocale : ${event.error}`);
-        };
+    recognition.onerror = function (event) {
+        alert('Erreur de reconnaissance vocale : ' + event.error);
+    };
+
+    recognition.onspeechend = function () {
+        recognition.stop();
+    };
+}
+
 
         const showGamesButton = document.getElementById('showGamesButton');
         const gameList = document.getElementById('gameList');
