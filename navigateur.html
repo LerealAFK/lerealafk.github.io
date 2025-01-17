@@ -313,17 +313,26 @@
             document.body.style.backgroundImage = `url(${imageUrl})`;
         }
 
+        // Fonction pour ouvrir le sélecteur de fichiers
+        function selectFile() {
+            document.getElementById('fileInput').click();
+        }
+
+// Fonction pour appliquer l'image sélectionnée comme fond d'écran
         function changeBackground(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = e => {
+                reader.onload = function (e) {
+                    // Appliquer l'image comme fond d'écran
                     setBackground(e.target.result);
+                    // Sauvegarder l'image dans le localStorage pour la conserver
                     localStorage.setItem('backgroundImage', e.target.result);
                 };
                 reader.readAsDataURL(file);
             }
         }
+        
 
         function setDefaultBackground(index) {
             const imageUrl = defaultBackgrounds[index - 1];
