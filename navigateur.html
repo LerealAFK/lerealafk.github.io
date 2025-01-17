@@ -235,6 +235,52 @@
             border-radius: 5px;
         }
 
+        .quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.quick-link {
+    position: relative;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.quick-link:hover {
+    background-color: #e0e0e0;
+}
+
+.quick-link .delete-button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    display: none;
+}
+
+.quick-link:hover .delete-button {
+    display: block;
+}
+
 
     </style>
 </head>
@@ -250,7 +296,7 @@
     </div>
 
     <!-- Quick Links -->
-    <div class="quick-links">
+    <div id="quickLinksContainer" class="quick-links">
         <a href="https://www.google.com" target="_blank" onclick="addToHistory('Google')">Google</a>
         <a href="https://www.qwant.com" target="_blank" onclick="addToHistory('Qwant')">Qwant</a>
         <a href="https://www.duckduckgo.com" target="_blank" onclick="addToHistory('DuckDuckGo')">DuckDuckGo</a>
