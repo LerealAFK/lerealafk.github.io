@@ -201,85 +201,7 @@
             transform: scale(0.95); /* Réduction au clic */
         }
 
-        #addQuickLinkContainer {
-            margin: 20px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            display: flex;        
-            gap: 10px;        
-            justify-content: center;
-        }
-
-        #addQuickLinkButton {
-            position: fixed;
-            bottom: 10px;
-            right: 560px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #addQuickLinkButton:hover {
-            background-color: #218838;
-        }
-
-        #addQuickLinkContainer input {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .quick-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .quick-link {
-            position: relative;
-            padding: 10px 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f1f1f1;
-            text-decoration: none;
-            color: #333;
-            font-size: 14px;
-            display: inline-block;        
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .quick-link:hover {
-            background-color: #e0e0e0;
-        }
-
-        .quick-link .delete-button {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 20px;
-            height: 20px;
-            background-color: #ff4d4d;
-            color: whitee;
-            border: none;
-            border-radius: 50%;
-            font-size: 14px;
-             line-height: 20px;
-            text-align: center;
-            cursor: pointer;
-            display: none;
-        }
-
-        .quick-link:hover .delete-button {
-            display: block;
-        }
+        
 
 
     </style>
@@ -296,7 +218,7 @@
     </div>
 
     <!-- Quick Links -->
-    <div id="quickLinksContainer" class="quick-links">
+    <div class="quick-links">
         <a href="https://www.google.com" target="_blank" onclick="addToHistory('Google')">Google</a>
         <a href="https://www.qwant.com" target="_blank" onclick="addToHistory('Qwant')">Qwant</a>
         <a href="https://www.duckduckgo.com" target="_blank" onclick="addToHistory('DuckDuckGo')">DuckDuckGo</a>
@@ -305,13 +227,7 @@
         <a href="https://chatgpt.com" target="_blank" onclick="addToHistory('Chatgpt')">Chatgpt</a>
     </div>
 
-    <!-- Formulaire d'ajout de Quick Link -->
-        <div id="addQuickLinkContainer" style="display: none;">
-            <input type="text" id="quickLinkName" placeholder="Nom du lien" />
-            <input type="text" id="quickLinkUrl" placeholder="URL (ex: https://example.com)" />
-            <button onclick="handleAddQuickLink()">Ajouter le lien</button>
-        </div>
-        <button id="addQuickLinkButton" onclick="toggleAddQuickLink()">➕</button>
+    
 
 
     <!-- Menu déroulant -->
@@ -565,83 +481,6 @@
     container.style.display = container.style.display === 'none' ? 'flex' : 'none';
 }
 
-function handleAddQuickLink() {
-    const name = document.getElementById('quickLinkName').value.trim();
-    const url = document.getElementById('quickLinkUrl').value.trim();
-
-    if (!name || !url) {
-        alert('Veuillez remplir les deux champs.');
-        return;
-    }
-
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        alert('Veuillez entrer une URL valide commençant par "http://" ou "https://".');
-        return;
-    }
-
-    addQuickLink(name, url);
-    renderQuickLinks(); // Met à jour l'affichage des quick links
-    toggleAddQuickLink(); // Ferme le formulaire
-}
-
-
-
-function renderQuickLinks() {
-    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
-    const container = document.getElementById('quickLinksContainer');
-
-    container.innerHTML = ''; // Vide les quick links avant de les recharger
-
-    for (const [name, url] of Object.entries(quickLinks)) {
-        const linkWrapper = document.createElement('div');
-        linkWrapper.classList.add('quick-link');
-
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_blank';
-        link.textContent = name;
-        link.onclick = () => addToHistory(name);
-
-        const deleteButton = document.createElement('button');
-        deleteButton.classList.add('delete-button');
-        deleteButton.textContent = '❌';
-        deleteButton.onclick = (event) => {
-            event.stopPropagation(); // Empêche le clic de suivre le lien
-            removeQuickLink(name);
-        };
-
-        linkWrapper.appendChild(link);
-        linkWrapper.appendChild(deleteButton);
-        container.appendChild(linkWrapper);
-    }
-}
-
-function removeQuickLink(name) {
-    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
-    if (quickLinks[name]) {
-        delete quickLinks[name];
-        localStorage.setItem('quickLinks', JSON.stringify(quickLinks));
-        alert(`Quick link supprimé : ${name}`);
-        renderQuickLinks(); // Met à jour l'affichage
-    }
-}
-
-function addQuickLink(name, url) {
-    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
-    quickLinks[name] = url;
-    localStorage.setItem('quickLinks', JSON.stringify(quickLinks));
-    alert(`Quick link ajouté : ${name}`);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    renderQuickLinks(); // Charge les quick links au démarrage
-});
-
-
-// Initialisation au chargement
-document.addEventListener('DOMContentLoaded', () => {
-    renderQuickLinks();
-});
 
     </script>
 </body>
