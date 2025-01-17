@@ -216,7 +216,27 @@
 
     <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="changeBackground(event)">
 
+    <button id="showGamesButton">Afficher la liste des jeux</button>
+    <ul id="gameList" style="display: none;">
+        <li><a href="https://www.minecraft.net/" target="_blank">Minecraft</a></li>
+        <li><a href="https://www.roblox.com/" target="_blank">Roblox</a></li>
+        <li><a href="https://store.steampowered.com/app/730/CounterStrike_Global_Offensive/" target="_blank">CS:GO</a></li>
+    </ul>
+
     <script>
+        const showGamesButton = document.getElementById('showGamesButton');
+        const gameList = document.getElementById('gameList');
+
+        showGamesButton.addEventListener('click', () => {
+            // Affiche ou cache la liste des jeux
+            if (gameList.style.display === 'none') {
+                gameList.style.display = 'block';
+                showGamesButton.textContent = 'Masquer la liste des jeux';
+            } else {
+                gameList.style.display = 'none';
+                showGamesButton.textContent = 'Afficher la liste des jeux';
+            }
+        });
         // Images de base
         const defaultBackgrounds = [
             'minecraft.jpeg',
