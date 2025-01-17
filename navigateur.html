@@ -584,6 +584,48 @@ function handleAddQuickLink() {
     toggleAddQuickLink(); // Ferme le formulaire
 }
 
+
+
+function renderQuickLinks() {
+    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
+    const container = document.getElementById('quickLinksContainer');
+
+    container.innerHTML = ''; // Vide les quick links avant de les recharger
+
+    for (const [name, url] of Object.entries(quickLinks)) {
+        const linkWrapper = document.createElement('div');
+        linkWrapper.classList.add('quick-link');
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.textContent = name;
+        link.onclick = () => addToHistory(name);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-button');
+        deleteButton.textContent = '❌';
+        deleteButton.onclick = (event) => {
+            event.stopPropagation(); // Empêche le clic de suivre le lien
+            removeQuickLink(name);
+        };
+
+        linkWrapper.appendChild(link);
+        linkWrapper.appendChild(deleteButton);
+        container.appendChild(linkWrapper);
+    }
+}
+
+function removeQuickLink(name) {
+    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
+    if (quickLinks[name]) {
+        delete quickLinks[name];
+        localStorage.setItem('quickLinks', JSON.stringify(quickLinks));
+        alert(`Quick link supprimé : ${name}`);
+        renderQuickLinks(); // Met à jour l'affichage
+    }
+}
+
 function addQuickLink(name, url) {
     const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
     quickLinks[name] = url;
@@ -591,22 +633,10 @@ function addQuickLink(name, url) {
     alert(`Quick link ajouté : ${name}`);
 }
 
-function renderQuickLinks() {
-    const quickLinks = JSON.parse(localStorage.getItem('quickLinks')) || {};
-    const container = document.querySelector('.quick-links');
+document.addEventListener('DOMContentLoaded', () => {
+    renderQuickLinks(); // Charge les quick links au démarrage
+});
 
-    container.innerHTML = ''; // Vide les quick links avant de les recharger
-
-    for (const [name, url] of Object.entries(quickLinks)) {
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_blank';
-        link.textContent = name;
-        link.onclick = () => addToHistory(name);
-
-        container.appendChild(link);
-    }
-}
 
 // Initialisation au chargement
 document.addEventListener('DOMContentLoaded', () => {
