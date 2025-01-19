@@ -380,7 +380,7 @@
     // Vérifie si l'input est une recherche
             if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
         // Recherche sur DuckDuckGo
-                url = `https://duckduckgo.com/?q=${encodeURIComponent(url)}`;
+                url = `https://google.es/search?q=${encodeURIComponent(url)}`;
             } else if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
         // Si c'est un terme sans 'http://', ajoute 'https://'
                 url = 'https://' + url;
