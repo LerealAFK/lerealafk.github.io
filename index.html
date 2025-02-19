@@ -240,6 +240,30 @@
         <button onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
         <button id="themeToggle" onclick="toggleTheme()">Mode ☀️</button>
     </div>
+    <script>
+        (function(i,n,t,s,t,l){
+            i.intstl = i.intstl || function() {
+                (i.intstl.q=(i.intstl.q||[])).push(arguments)
+            };
+            var s=n.getElementsByTagName('head')[0];
+            var q=n.createElement('script'); q.async=1;
+            q.src='https://static.ezmob.com/intstl/intstl.js';
+            s.appendChild(q);
+            i.intstl('init', {
+                host: 'xml.qualiclicks.com',
+                feed: 759048,
+                auth : 'uS6b',
+                logo: 'https://adk.ezmob.com/images/icoLogo.png',
+                color1: '#3c8dbc', color2: '#307196',
+                textColor: 'white', background: '#f7f7f6',
+                engagementPeriod: 10,
+                interval: 90,
+                defer: 10
+            });
+            i.intstl('show');
+        })(window, document);
+    </script>
+                                
 
     <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
 
