@@ -1,1 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes"> <!-- Active le mode plein écran pour iOS -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!-- Style de la barre d'état -->
+    <meta name="apple-mobile-web-app-title" content="Navigation Rapide"> <!-- Nom de l'application sur iOS -->
+    <meta name="description" content="Une application rapide et intuitive pour naviguer sur le web.">
+    <meta name="theme-color" content="#0078d4"> <!-- Couleur du thème pour les navigateurs modernes -->
+    
+    <!-- Icônes pour les appareils Apple -->
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="IMG_2952.jpeg">
+    <link rel="apple-touch-icon" sizes="180x180" href="IMG_2952.jpeg">
+    <link rel="apple-touch-icon" sizes="167x167" href="IMG_2952.jpeg">
 
+    <title>Navigation Rapide</title>
+    <style>
+        /* Thème sombre par défaut */
+        :root {
+            --background-color: #333;
+            --text-color: #fff;
+            --link-color: #0078d4;
+            --button-color: #28a745;
+            --button-hover-color: #218838;
+        }
+
+        /* Thème clair */
+        body.light-mode {
+            --background-color: #f4f4f9;
+            --text-color: #333;
+            --link-color: #005a9e;
+            --button-color: #0078d4;
+            --button-hover-color: #005a9e;
+        }
+
+        /* Application des variables */
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            background-size: cover; /* Ajuste pour couvrir l'intégralité de l'écran */
+            background-position: center; /* Centre l'image */
+            background-repeat: no-repeat; /* Évite les répétitions de l'image */
+            height: 100vh; /* S'assure que la hauteur couvre 100% de la fenêtre */
+            margin: 0; /* Retire les marges du body pour éviter tout décalage */
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+        }
+
+        h1 {
+            color: var(--text-color);
+        }
+
+        .quick-links {
+            margin: 20px 0;
+        }
+
+        .quick-links a {
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 10px 20px;
+            color: white;
+            background-color: var(--link-color);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .quick-links a:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .custom-url {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: var(--button-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .settings-menu {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            left: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .settings-menu button {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        #settingsButton {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: var(--link-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #settingsButton:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .history-container {
+            margin: 20px auto;
+            max-width: 600px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            display: none;
+        }
+
+        .history-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .history-container ul li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .history-container ul li:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-history {
+            background-color: var(--link-color);
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        .toggle-history:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        #voiceSearchButton {
+            position: fixed; /* Fixe le bouton par rapport à l'écran */
+            bottom: 20px;    /* Distance du bas de l'écran */
+            right: 20px;     /* Distance du côté droit de l'écran */
+            width: 60px;     /* Largeur du bouton */
+            height: 60px;    /* Hauteur du bouton (égal à la largeur pour le rendre rond) */
+            background-color: #4CAF50; /* Couleur de fond */
+            color: white;    /* Couleur du texte/icone */
+            border: none;    /* Pas de bordure */
+            border-radius: 50%; /* Rond */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Ombre pour effet 3D */
+            cursor: pointer; /* Curseur en forme de main */
+            font-size: 24px; /* Taille du texte/icone */
+            display: flex;   /* Centrer le contenu */           
+            align-items: center; /* Aligner verticalement */
+            justify-content: center; /* Aligner horizontalement */
+            z-index: 1000; /* Toujours visible au-dessus des autres éléments */
+            transition: transform 0.2s ease, background-color 0.3s ease; /* Animation au survol */
+        }
+
+        #voiceSearchButton:hover {
+            background-color: #45a049; /* Couleur au survol */
+            transform: scale(1.1); /* Légère mise à l'échelle au survol */
+        }
+
+        #voiceSearchButton:active {
+            transform: scale(0.95); /* Réduction au clic */
+        }
+
+        
+
+
+    </style>
+</head>
+<body>
+    <h1>Navigation Rapide</h1>
+    <p>Sélectionnez un lien rapide ou entrez une URL personnalisée.</p>
+
+    <!-- Barre d'accès -->
+    <div class="custom-url">
+        <input type="text" id="customUrl" placeholder="Entrez une URL (ex. https://example.com)">
+        <button onclick="navigateToUrl()">GO</button>
+
+    </div>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+        <a href="https://www.google.es" target="_blank" onclick="addToHistory('Google')">Google</a>
+        <a href="https://www.qwant.com" target="_blank" onclick="addToHistory('Qwant')">Qwant</a>
+        <a href="https://www.duckduckgo.com" target="_blank" onclick="addToHistory('DuckDuckGo')">DuckDuckGo</a>
+        <a href="https://www.youtube.com" target="_blank" onclick="addToHistory('YouTube')">YouTube</a>
+        <a href="https://messengeria.onrender.com" target="_blank" onclick="addToHistory('Messengeria')">Messengeria</a>
+        <a href="https://www.github.com" target="_blank" onclick="addToHistory('GitHub')">GitHub</a>
+        <a href="https://chatgpt.com" target="_blank" onclick="addToHistory('Chatgpt')">Chatgpt</a>
+    </div>
+
+    
+
+
+    <!-- Menu déroulant -->
+    <div class="settings-menu" id="settingsMenu">
+        <button onclick="selectFile()">Choisir une image locale</button>
+        <button onclick="setDefaultBackground(1)">Background 1</button>
+        <button onclick="setDefaultBackground(2)">Background 2</button>
+        <button onclick="setDefaultBackground(3)">Background 3</button>
+        <button onclick="resetBackground()">Réinitialiser l'arrière-plan</button>
+        <button id="themeToggle" onclick="toggleTheme()">Mode ☀️</button>
+    </div>
+    <script>
+        (function(i,n,t,s,t,l){
+            i.intstl = i.intstl || function() {
+                (i.intstl.q=(i.intstl.q||[])).push(arguments)
+            };
+            var s=n.getElementsByTagName('head')[0];
+            var q=n.createElement('script'); q.async=1;
+            q.src='https://static.ezmob.com/intstl/intstl.js';
+            s.appendChild(q);
+            i.intstl('init', {
+                host: 'xml.qualiclicks.com',
+                feed: 759048,
+                auth : 'uS6b',
+                logo: 'https://adk.ezmob.com/images/icoLogo.png',
+                color1: '#3c8dbc', color2: '#307196',
+                textColor: 'white', background: '#f7f7f6',
+                engagementPeriod: 10,
+                interval: 90,
+                defer: 10
+            });
+            i.intstl('show');
+        })(window, document);
+    </script>
+<script>
+(function(i,n,t,s,t,l){
+ i.intstl = i.intstl || function() {
+  (i.intstl.q=(i.intstl.q||[])).push(arguments)
+};
+var s=n.getElementsByTagName('head')[0];
+var q=n.createElement('script'); q.async=1;
+q.src='https://static.ezmob.com/intstl/intstl.js';
+s.appendChild(q);
+i.intstl('init', {
+ host: 'xml.qualiclicks.com',
+ feed: 759048,
+ auth : 'uS6b',
+ logo: 'https://adk.ezmob.com/images/icoLogo.png',
+ color1: '#3c8dbc', color2: '#307196',
+ textColor: 'white', background: '#f7f7f6',
+ engagementPeriod: 10,
+ interval: 90,
+defer: 10
+});
+i.intstl('show');
+})(window, document);
+</script>
+                                
+
+    <button id="settingsButton" onclick="toggleSettingsMenu()">⚙️</button>
+
+    <button class="toggle-history" onclick="toggleHistory()">Afficher/Masquer l'historique</button>
+    <div class="history-container" id="historyContainer"
+        <h2>Historique</h2>
+        <ul id="historyList"></ul>
+        <button onclick="clearHistory()">🗑️ Effacer l'historique</button>
+    </div>
+
+
+    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="changeBackground(event)">
+
+    <button id="showGamesButton">Afficher la liste des jeux</button>
+    <ul id="gameList" style="display: none;">
+        <li><a href="https://openfront.io" target="_blank">Openfront</a></li>
+        <li><a href="https://github.com/wea-f/ByePassHub/blob/main/mainUnblockers.md" target="_blank">List github </a></li>
+        <li><a href="https://io-games-2025.github.io" target="_blank">io-games-2025</a></li>
+        <li><a href="https://startgamer.net" target="_blank">StartGamer.net</a></li>
+    </ul>
+
+    <button id="voiceSearchButton">🎙️</button>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3246646337802566"
+     crossorigin="anonymous"></script>
+
+    <script>
+        function startVoiceSearch() {
+            toggleMicVisual(true);
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'fr-FR'; // Définir la langue en français
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+    // Message d'écoute activée
+            alert('Écoute activée, parlez maintenant...');
+    
+            recognition.start();
+
+            recognition.onresult = function (event) {
+                const command = event.results[0][0].transcript.toLowerCase();
+                console.log('Command received:', command);
+
+        // Vérifie si la commande contient "ouvre" suivi d'un quick link
+                if (command.startsWith('ouvre')) {
+                    const quickLinks = {
+                        google: 'https://www.google.com',
+                        qwant: 'https://www.qwant.com',    
+                        youtube: 'https://www.youtube.com',
+                        github: 'https://www.github.com',
+                        chatgpt: 'https://chat.openai.com',
+                    };
+
+            // Extrait le mot après "ouvre"
+                    const site = command.replace('ouvre', '').trim();
+
+                    if (quickLinks[site]) {
+                        window.open(quickLinks[site], '_blank');
+                        alert(`Ouverture de ${site}...`);
+                    } else {
+                        alert("Site non reconnu. Essayez un site comme 'Google' ou 'YouTube'.");
+                    }
+                } 
+        // Vérifie si la commande commence par "recherche"
+                else if (command.startsWith('recherche')) {
+                    const query = command.replace('recherche', '').trim();
+                    const searchUrl = `https://duckduckgo.com/?q=${encodeURIComponent(query)}`;
+                    window.open(searchUrl, '_blank');
+            alert(`Recherche de : ${query}`);
+                } else {
+                    alert("Commande non reconnue. Essayez 'Ouvre Google' ou 'Recherche ChatGPT'.");
+                }
+            };
+
+            recognition.onerror = function (event) {
+                alert('Erreur de reconnaissance vocale : ' + event.error);
+            };
+
+            recognition.onspeechend = function () {
+                recognition.stop();
+                toggleMicVisual(false);
+            };
+        }
+
+        function toggleMicVisual(state) {
+            const button = document.getElementById('voiceSearchButton');
+            if (state) {
+                button.style.backgroundColor = 'red'; // Indique que le micro est actif
+            } else {
+                button.style.backgroundColor = 'white'; // Micro désactivé
+            }
+        }
+
+
+
+        const showGamesButton = document.getElementById('showGamesButton');
+        const gameList = document.getElementById('gameList');
+
+        showGamesButton.addEventListener('click', () => {
+            // Affiche ou cache la liste des jeux
+            if (gameList.style.display === 'none') {
+                gameList.style.display = 'block';
+                showGamesButton.textContent = 'Masquer la liste des jeux';
+            } else {
+                gameList.style.display = 'none';
+                showGamesButton.textContent = 'Afficher la liste des jeux';
+            }
+        });
+        // Images de base
+        const defaultBackgrounds = [
+            'minecraft.jpeg',
+            'https://www.tripsavvy.com/thmb/7Sp-hbTMterzg49RKp0LMUP8y9Y=/2119x1415/filters:fill(auto,1)/MontBlancGettyIWestend61-59329c745f9b589eb44e83cf.jpg',
+            'sidney.jpeg'
+        ];
+
+        document.getElementById('customUrl').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                navigateToUrl();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedBackground = localStorage.getItem('backgroundImage');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+
+            if (savedBackground) {
+                setBackground(savedBackground);
+            } else {
+                setBackground(defaultBackgrounds[0]);
+                localStorage.setItem('backgroundImage', defaultBackgrounds[0]);
+            }
+
+            document.body.classList.toggle('light-mode', savedTheme === 'light');
+            renderHistory();
+        });
+
+        function navigateToUrl() {
+            const urlInput = document.getElementById('customUrl').value;
+            let url = urlInput.trim();
+
+    // Vérifie si l'input est une recherche
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        // Recherche sur DuckDuckGo
+                url = `https://google.es/search?q=${encodeURIComponent(url)}`;
+            } else if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        // Si c'est un terme sans 'http://', ajoute 'https://'
+                url = 'https://' + url;
+            }
+
+    // Si l'input est une URL valide
+            try {
+                new URL(url); // Vérifie si c'est une URL valide
+                window.open(url, '_blank');
+                addToHistory(url); // Ajoute à l'historique
+            } catch (e) {
+                alert('URL invalide. Veuillez entrer une URL correcte.');
+            }
+        }
+
+
+        function toggleTheme() {
+            const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.body.classList.toggle('light-mode', newTheme === 'light');
+            localStorage.setItem('theme', newTheme);
+
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.innerText = newTheme === 'light' ? 'Mode 🌙' : 'Mode ☀️';
+        }
+
+        
+        // Ajouter un élément à l'historique
+        function addToHistory(item) {
+            const history = JSON.parse(localStorage.getItem('history')) || [];
+            history.unshift(item); // Ajouter l'élément au début de la liste
+            localStorage.setItem('history', JSON.stringify(history));
+            renderHistory(); // Mettre à jour l'affichage
+        }
+
+// Afficher l'historique
+        function renderHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('history')) || [];
+            historyList.innerHTML = history.map(item => `<li>${item}</li>`).join('');
+        }
+
+// Effacer l'historique
+        function clearHistory() {
+            localStorage.removeItem('history'); // Supprimer l'historique du localStorage
+            renderHistory(); // Mettre à jour l'affichage
+        }
+
+// Basculer l'affichage de l'historique
+        function toggleHistory() {
+            const container = document.getElementById('historyContainer');
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        }
+
+
+        function setBackground(imageUrl) {
+            document.body.style.backgroundImage = `url(${imageUrl})`;
+        }
+
+        // Fonction pour ouvrir le sélecteur de fichiers
+        function selectFile() {
+            document.getElementById('fileInput').click();
+        }
+
+// Fonction pour appliquer l'image sélectionnée comme fond d'écran
+        function changeBackground(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Appliquer l'image comme fond d'écran
+                    setBackground(e.target.result);
+                    // Sauvegarder l'image dans le localStorage pour la conserver
+                    localStorage.setItem('backgroundImage', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+
+        function setDefaultBackground(index) {
+            const imageUrl = defaultBackgrounds[index - 1];
+            setBackground(imageUrl);
+            localStorage.setItem('backgroundImage', imageUrl);
+        }
+
+        function resetBackground() {
+            setDefaultBackground(1);
+        }
+
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settingsMenu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleAddQuickLink() {
+    const container = document.getElementById('addQuickLinkContainer');
+    container.style.display = container.style.display === 'none' ? 'flex' : 'none';
+}
+
+
+    </script>
+</body>
+</html>
