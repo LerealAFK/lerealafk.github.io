@@ -311,6 +311,23 @@ i.intstl('show');
     <button id="voiceSearchButton">🎙️</button>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3246646337802566"
      crossorigin="anonymous"></script>
+    <script>
+  // Fonction pour vérifier si l'utilisateur utilise Chrome
+  function isChrome() {
+    return /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+  }
+
+  // Fonction pour vérifier si l'utilisateur utilise Windows 11
+  function isWindows11() {
+    return /Windows NT 10.0/.test(navigator.userAgent) && /Win64/.test(navigator.userAgent);
+  }
+
+  // Redirection vers 404.html si Chrome ou Windows 11 est détecté
+  if (isChrome() || isWindows11()) {
+    window.location.href = "404.html";
+  }
+</script>
+
 
     <script>
         function startVoiceSearch() {
