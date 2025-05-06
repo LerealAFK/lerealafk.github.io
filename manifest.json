@@ -1,6 +1,6 @@
 {
-  "name": "Navigateur web",
-  "short_name": "NavRapide",
+  "name": "Exos français",
+  "short_name": "ExosFr",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#f4f4f9",
